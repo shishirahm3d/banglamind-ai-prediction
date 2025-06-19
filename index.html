@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📊 AI Prediction Dashboard - DIU Mega Mind</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h2>📊 AI Prediction</h2>
+                <button class="settings-btn" onclick="openSettings()">
+                    <i class="fas fa-cog"></i> Settings
+                </button>
+            </div>
+            
+            <div class="sidebar-content">
+                <div class="chat-history">
+                    <h3>Chat History (for Prediction Logs)</h3>
+                    <div id="chatHistoryList" class="chat-history-list">
+                        </div>
+                </div>
+                
+                <div class="sidebar-actions">
+                    <button class="action-btn" onclick="saveCurrentChat()">
+                        <i class="fas fa-save"></i> Save Log
+                    </button>
+                    <button class="action-btn" onclick="downloadChatLog()">
+                        <i class="fas fa-download"></i> Download Log
+                    </button>
+                    <button class="action-btn" onclick="toggleChatHistory()">
+                        <i class="fas fa-history"></i> Toggle History
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="chat-header">
+                <button class="sidebar-toggle" onclick="toggleSidebar()">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <h1>AI Prediction Dashboard - DIU Mega Mind</h1>
+                <div class="header-actions">
+                    <button class="theme-toggle" onclick="toggleDarkMode()">
+                        <i id="themeIcon" class="fas fa-moon"></i>
+                    </button>
+                    <div class="status-indicator">
+                        <span class="status-dot"></span>
+                        <span id="statusText">Ready</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="feature-selector">
+                <button id="btnInfluencer" class="active" onclick="showFeature('influencer')">👥 Influencer Analysis</button>
+                <button id="btnSentiment" onclick="showFeature('sentiment')">💬 Sentiment Analysis</button>
+                <button id="btnPredictive" onclick="showFeature('predictive')">🔮 Predictive Analysis</button>
+            </div>
+
+            <div class="feature-section" id="influencerSection" style="display: none;">
+                <div class="feature-content-area">
+                    <h2>👥 Influencer Identification</h2>
+                    <p>Analyze comments and reactions to identify potential social media influencers.</p>
+                    <div class="form-group">
+                        <label for="influencerTextInput">Paste comments/reactions data:</label>
+                        <textarea id="influencerTextInput" placeholder="E.g., User A: Great post! (Followers: 1M); User B: Love it! (Followers: 500); etc."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="influencerFileInput">Or upload a text file (e.g., .txt, .csv):</label>
+                        <input type="file" id="influencerFileInput" accept=".txt,.csv">
+                    </div>
+                    <button class="action-btn" onclick="analyzeInfluencers()">Analyze Influencers</button>
+                    <div class="feature-results" id="influencerResults">
+                        <h3>Results:</h3>
+                        <p>Influencers will appear here.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="feature-section" id="sentimentSection" style="display: none;">
+                <div class="feature-content-area">
+                    <h2>💬 Sentiment Analysis</h2>
+                    <p>Evaluate the emotional tone conveyed in user comments, reactions, and shared posts. The sentiment detection classifies content as positive, negative, or neutral, helping assess public mood and inform communication strategies.</p>
+                    <div class="form-group">
+                        <label for="sentimentTextInput">Paste text for sentiment analysis:</label>
+                        <textarea id="sentimentTextInput" placeholder="Enter comments, reactions, or post content here..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="sentimentFileInput">Or upload a text file (e.g., .txt):</label>
+                        <input type="file" id="sentimentFileInput" accept=".txt">
+                    </div>
+                    <button class="action-btn" onclick="performSentimentAnalysis()">Analyze Sentiment</button>
+                    <div class="feature-results" id="sentimentResults">
+                        <h3>Results:</h3>
+                        <p>Sentiment will appear here.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="feature-section" id="predictiveSection" style="display: none;">
+                <div class="feature-content-area">
+                    <h2>🔮 Predictive Situation Analysis</h2>
+                    <p>This AI-powered prediction module analyzes data from multiple sources like news articles, YouTube video summaries, and social media trends to predict whether an upcoming scheduled date is likely to experience a positive (favorable) or negative (unfavorable) situation or event.</p>
+                    <div class="form-group">
+                        <label for="newsInput">News Articles and Reports:</label>
+                        <textarea id="newsInput" placeholder="Paste news content or URLs..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="youtubeInput">YouTube Video Summaries/Links:</label>
+                        <textarea id="youtubeInput" placeholder="Paste video summaries or URLs..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="socialMediaInput">Social Media Trends and Discussions:</label>
+                        <textarea id="socialMediaInput" placeholder="Paste relevant social media text or trends..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="scheduledDate">Scheduled Date for Prediction:</label>
+                        <input type="date" id="scheduledDate">
+                    </div>
+                    <button class="action-btn" onclick="predictSituation()">Predict Situation</button>
+                    <div class="feature-results" id="predictiveResults">
+                        <h3>Prediction:</h3>
+                        <p>Prediction and recommendations will appear here.</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div id="loadingModal" class="modal">
+        <div class="modal-content">
+            <div class="loading-spinner"></div>
+            <p id="loadingText">Processing your request...</p>
+        </div>
+    </div>
+
+    <div id="settingsModal" class="modal">
+        <div class="modal-content settings-modal">
+            <div class="modal-header">
+                <h2>Settings</h2>
+                <button class="close-btn" onclick="closeSettings()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="modelInput">AI Model:</label>
+                    <input type="text" id="modelInput" placeholder="Enter model name" value="hf.co/shishirahm3d/banglamind-8b-instruct-bnb-4bit-q4km-GGUF:latest">
+                </div>
+                <div class="form-group">
+                    <label for="apiUrlInput">API URL:</label>
+                    <input type="text" id="apiUrlInput" placeholder="Enter API URL" value="http://203.190.9.169:11435/api/chat">
+                </div>
+                <div class="form-group">
+                    <label for="temperatureInput">Temperature:</label>
+                    <input type="range" id="temperatureInput" min="0" max="1" step="0.1" value="0.8">
+                    <span id="temperatureValue">0.8</span>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="action-btn" onclick="saveSettings()">Save Settings</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="renameChatModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Rename Log</h2>
+                <button class="close-btn" onclick="closeRenameModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="newChatNameInput">New Name:</label>
+                    <input type="text" id="newChatNameInput" placeholder="Enter new log name">
+                    <input type="hidden" id="chatToRename">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="action-btn" onclick="renameChat()">Rename</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="contextMenu" class="context-menu">
+        <div class="context-menu-item" onclick="openRenameModal()">
+            <i class="fas fa-edit"></i> Rename
+        </div>
+        <div class="context-menu-item" onclick="deleteSelectedChat()">
+            <i class="fas fa-trash"></i> Delete
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
